@@ -222,13 +222,14 @@ print(p)
 ```
 
 
-Explain what these two histograms are showing. Relate the location of the vertical line to the result on page 57 of the Good textbook about the expected value of a binomial distribution.
+
 
 
 
 ### Task B.
 
 *- hypothesis(i): the noun distribution has more “Syllable 1” than the verb distribution*
+
 *- hypothesis(ii): the noun and verb distributions are the same*
 
 
