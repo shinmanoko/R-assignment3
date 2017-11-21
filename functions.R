@@ -141,7 +141,6 @@ permtest_difference_in_props <- function(k1, k2, n1, n2, n_samples=9999) {
   # matrix
   rep_observations <- matrix(rep(observations, n_samples), n1 + n2)
   perm_observations <- apply(rep_observations, 2, sample, n1 + n2)
-  #print(perm_observations)
   # Generate the proportions in the two groups amongst the permuted observations.
   # Tricks: mean() of a TRUE/FALSE variable is the proportion "TRUE";
   # instead of having explicit "Group" labels that we hold fixed, we just hold fixed
@@ -156,13 +155,23 @@ permtest_difference_in_props <- function(k1, k2, n1, n2, n_samples=9999) {
 }
 
 v_pdp_pvalue_right <- function(k1_vec, k2_vec, n1, n2, n_samples=9999) {
-  #print(k1_vec)
+  
+  #library(foreach)
+  library(doMC)
+  registerDoMC(3) # 设置并行核数, 并注册并行
+  #library(doParallel)
+  #cl <- makeCluster(2)  # 设置并行核数
+  #registerDoParallel(cl) # 注册并行
+  
   nexp <- length(k1_vec)
   result <- rep(NA, nexp)
+  #foreach(i=1:nexp)  %dopar% {
   for(i in 1:nexp) {
-    #print(k1_vec[i])
-    ppp <- permtest_difference_in_props(k1_vec[i],k2_vec[i],n1,n2)
-    result[i] <- 1 - sum(ppp$permuted > 0.05) / nexp
+    #result[i] <- permtest_difference_in_props(k1_vec[i],k2_vec[i],n1,n2,n_samples)
+    ppp <- permtest_difference_in_props(k1_vec[i],k2_vec[i],n1,n2,n_samples)
+    #print(ppp)
+    result[i] <- permutation_pvalue_right(ppp)
+    #result[i] <- 1 - (sum(ppp$permuted > 0.05)+1) / (length(ppp$permuted)+1)
   }
   return(result)
 }

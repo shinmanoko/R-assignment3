@@ -194,11 +194,11 @@ per_1 <- d_per_group$per_syllable_1[1]
 per_2 <- d_per_group$per_syllable_1[2]
 
 stress_shift_replications <- data.frame(
-      Replication = paste0("R", sprintf("%04d", 1:1000)),
-      Noun_N_Syll_1 = rbinom(1000, 6506, per_1),
-      Verb_N_Syll_1 = rbinom(1000, 6732, per_2),
-      Noun_Percent_Syll_1 = Noun_N_Syll_1 / 6506,
-      Verb_Percent_Syll_1 = Verb_N_Syll_1 / 6732)
+      Replication = paste0("R", sprintf("%04d", 1:1000)))
+stress_shift_replications$Noun_N_Syll_1 <- rbinom(1000, 6506, per_1)
+stress_shift_replications$Verb_N_Syll_1 <- rbinom(1000, 6732, per_2)
+stress_shift_replications$Noun_Percent_Syll_1 <- stress_shift_replications$Noun_N_Syll_1 / 6506
+stress_shift_replications$Verb_Percent_Syll_1 <- stress_shift_replications$Verb_N_Syll_1 / 6732
 stress_shift_replications$Difference_in_Proportion <- stress_shift_replications$Noun_Percent_Syll_1 - stress_shift_replications$Verb_Percent_Syll_1
 
 print(stress_shift_replications)
@@ -238,18 +238,19 @@ source("functions.R")
 
 d_nb_group <- dplyr::group_by(stressshift::stress_shift_unamb,Category) %>%
   dplyr::summarise(Percent_Syll_1=sum(Syllable=="Syllable 1"))
-
 Nb_Noun <- d_nb_group$Percent_Syll_1[1]
 Nb_Verb <- d_nb_group$Percent_Syll_1[2]
-print(Noun_N_Syll_1)
+#print(Nb_Noun)
+#print(stress_shift_replications$Noun_N_Syll_1)
 
 stress_shift_replications <- stress_shift_replications %>%
   dplyr::mutate(
-    Permutation_Pvalue = v_pdp_pvalue_right(Noun_N_Syll_1, Verb_N_Syll_1, 6506, 6732, n_samples=99))
+    Permutation_Pvalue = v_pdp_pvalue_right(Noun_N_Syll_1, Verb_N_Syll_1, 6506, 6732, n_samples=99)
+    )
 print(stress_shift_replications)
 ```
 
-The process here takes too long that I didn't get the result for anwsering the question...
+Although using the parallel, the process here still takes too long that I didn't get the result for anwsering the question...
 
 
 
@@ -345,9 +346,11 @@ test_dependancy_Verb <- pearson_x2_stat(stress_Verb, "Syllable", "Word")
 #print(test_dependancy_Verb)
 
 stress_Noun_perm <- permutation_test_generalized(stress_Noun, "Syllable", "Word", pearson_x2_stat, n_samples=99)
-#print(stress_Noun_perm)
+print(stress_Noun_perm)
 stress_Verb_perm <- permutation_test_generalized(stress_Verb, "Syllable", "Word", pearson_x2_stat, n_samples=99)
-#print(stress_Verb_perm)
+print(stress_Verb_perm)
 ```
 
+
+Note: this statistic will always get bigger the farther away var is from being independent of grouping_var.
 
