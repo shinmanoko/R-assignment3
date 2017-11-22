@@ -193,10 +193,13 @@ v_pdp_pvalue_right <- function(k1_vec, k2_vec, n1, n2, n_samples=9999) {
 # combinations of `var` and `grouping_var`
 pearson_x2_stat <- function(d, var, grouping_var) {
   values <- unique(d[[var]])
+  #print(values)
   groups <- unique(d[[grouping_var]])
+  #print(groups)
   result <- 0
   for (v in values) {
     prop_overall <- mean(d[[var]] == v)
+    #print(prop_overall)
     for (g in groups) {
       d_g <- dplyr::filter(d, get(grouping_var) == g)
       prop_g <- mean(d_g[[var]] == v)
@@ -204,6 +207,7 @@ pearson_x2_stat <- function(d, var, grouping_var) {
     } }
   return(result)
 }
+
 
 
 permutation_test_generalized <- function(d, var_to_permute, group_var, statistic, n_samples=9999) {
